@@ -1,0 +1,27 @@
+---
+ - hosts: localhost
+   become: yes
+   vars:
+     java_yum_package: java-1.8.0-openjdk
+   tasks:
+     - name: Install jdk
+       yum:
+         name: "{{java_yum_package}}"
+         state: present
+         update_cache: yes
+
+     - name: Checking is file exist
+       stat:
+         path: "/usr/lib/java-1.8.0"
+       register: status_check
+
+     - name: message if exist
+       debug:
+           msg: "File exists at /usr/lib/java-1.8.0"
+       when: status_check.stat.exists
+
+
+     - name: message if not exist
+       debug:
+           msg: "File doesn't exist"
+       when: not status_check.stat.exists
